@@ -37,13 +37,12 @@
 	var geoDatas = [{international: "https://rawgit.com/John123Yu/LeafletMapDataGov/master/international.geojson"}, {state: 'https://rawgit.com/John123Yu/LeafletMapDataGov/master/us_states.geojson'}, {local: 'https://rawgit.com/John123Yu/LeafletMapDataGov/master/us_cities_counties.geojson'}]
 
 	var layer = new L.StamenTileLayer("toner-lite");
-	mymap.addLayer(layer);
-	// L.tileLayer('http://{s}.tile.openstreetmap.fr/osmfr/{z}/{x}/{y}.png', {
-	//     attribution: '',
-	//     maxZoom: 10,
-	//     id: 'your.mapbox.project.id',
-	//     accessToken: 'pk.eyJ1Ijoiam9objEyM3l1IiwiYSI6ImNqMWRzbTYwbjAwMGsyd2tlbzE4eDVrNnkifQ.CUa8KEpHJAgVHKOADdQaVQ'
-	// }).addTo(mymap);
+	var layer2 = L.tileLayer('http://{s}.tile.openstreetmap.fr/osmfr/{z}/{x}/{y}.png', {
+	    attribution: '',
+	    maxZoom: 15
+	});
+	mymap.addLayer(layer2);
+
 	$.ajax({
 		dataType: "json",
 		url: "https://rawgit.com/John123Yu/LeafletMapDataGov/master/international.geojson",
@@ -144,16 +143,17 @@
 	})	
 	setTimeout(function(){
 		var baseMaps = {
-		    "world": layer,
+		    "Text Map": layer,
+		    'Geographic Map': layer2
 		};
-		console.log("International", international)
-		console.log("state", state)
-		console.log("local", local)
 		var overlayMaps = {
 		    "International": international,
 		    "State": state,
 		    "US Cities and Counties": local
 		};
+		mymap.addLayer(international);
+		mymap.addLayer(state);
+		mymap.addLayer(local);
 		L.control.layers(baseMaps, overlayMaps).addTo(mymap);
 	 }, 100);	
 </script>
