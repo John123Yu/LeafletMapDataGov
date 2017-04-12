@@ -18,6 +18,7 @@
         "Type": "US City or County"
       },
       "geometry":{"type":"Point","coordinates":[-83.743038, 42.280826]}
+    },
     {
       "type": "Feature",
       "properties": {

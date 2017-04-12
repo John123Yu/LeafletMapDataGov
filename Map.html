@@ -25,14 +25,16 @@
 </body>
 <script type="text/javascript">
 	var mymap = L.map('mapid').setView([30.505, -36], 2.5);
+	var international, state, local;
 	// var mymap = L.map('mapid').setView([30.505, -36], 2.5);
 	var myStyle = {
 	    "color": "black",
 	    "weight": 1,
 	    "opacity": 0.8,
 	    'fillColor': '#4679B2',
-	    fillOpacity: 0.7
+	    'fillOpacity': 0.7
 	};
+	var geoDatas = [{international: "https://rawgit.com/John123Yu/LeafletMapDataGov/master/international.geojson"}, {state: 'https://rawgit.com/John123Yu/LeafletMapDataGov/master/us_states.geojson'}, {local: 'https://rawgit.com/John123Yu/LeafletMapDataGov/master/us_cities_counties.geojson'}]
 
 	var layer = new L.StamenTileLayer("toner-lite");
 	mymap.addLayer(layer);
@@ -42,12 +44,11 @@
 	//     id: 'your.mapbox.project.id',
 	//     accessToken: 'pk.eyJ1Ijoiam9objEyM3l1IiwiYSI6ImNqMWRzbTYwbjAwMGsyd2tlbzE4eDVrNnkifQ.CUa8KEpHJAgVHKOADdQaVQ'
 	// }).addTo(mymap);
-
 	$.ajax({
 		dataType: "json",
-		url: "https://rawgit.com/John123Yu/GeoJsonDataGov/master/us_states.geojson",
+		url: "https://rawgit.com/John123Yu/LeafletMapDataGov/master/international.geojson",
 		success: function(data) {
-		    L.geoJSON(data, {
+		    international = L.geoJSON(data, {
 			    style: myStyle,
 			    onEachFeature: function(feature, layer) {
 				    layer.on({
@@ -72,8 +73,97 @@
 				        }
 	                });
 				}
-			}).addTo(mymap);
+			})
 		}
-	})		
+	})
+
+	$.ajax({
+		dataType: "json",
+		url: "https://rawgit.com/John123Yu/LeafletMapDataGov/master/us_states.geojson",
+		success: function(data) {
+		    state = L.geoJSON(data, {
+			    style: myStyle,
+			    onEachFeature: function(feature, layer) {
+				    layer.on({
+				    	contextmenu: function(e){
+				    		var popup = L.popup().setLatLng(e.latlng).setContent(feature.properties.Item  + "<br> Link: " + feature.properties.Link)
+						    popup.openOn(mymap);
+						},
+	                    mouseover: function(e) {
+	                    	layer.setStyle({
+					            fillColor: 'orange',
+					            fillOpacity: 0.6
+					        })
+	                    },
+	                    mouseout: function (e) {
+	                    	layer.setStyle({
+					            fillColor: '#4679B2',
+					            fillOpacity: 0.7
+					        })
+				        },
+	                    click: function (e) {
+				            window.open(feature.properties.Link,'_blank');
+				        }
+	                });
+				}
+			})
+		}
+	})
+
+	$.ajax({
+		dataType: "json",
+		url: "https://rawgit.com/John123Yu/LeafletMapDataGov/master/us_cities_counties.geojson",
+		success: function(data) {
+		    local = L.geoJSON(data, {
+			    style: myStyle,
+			    onEachFeature: function(feature, layer) {
+				    layer.on({
+				    	contextmenu: function(e){
+				    		var popup = L.popup().setLatLng(e.latlng).setContent(feature.properties.Item  + "<br> Link: " + feature.properties.Link)
+						    popup.openOn(mymap);
+						},
+	                    mouseover: function(e) {
+	                    	layer.setStyle({
+					            fillColor: 'orange',
+					            fillOpacity: 0.6
+					        })
+	                    },
+	                    mouseout: function (e) {
+	                    	layer.setStyle({
+					            fillColor: '#4679B2',
+					            fillOpacity: 0.7
+					        })
+				        },
+	                    click: function (e) {
+				            window.open(feature.properties.Link,'_blank');
+				        }
+	                });
+				}
+			})
+			// var baseMaps = {
+			//     "world": layer,
+			// };
+			// var overlayMaps = {
+			//     "International": international,
+			//     "State": state,
+			//     "US Cities and Counties": local
+			// };
+			// L.control.layers(baseMaps, overlayMaps).addTo(mymap);
+		}
+	})	
+	setTimeout(function(){
+		var baseMaps = {
+		    "world": layer,
+		};
+		console.log("International", international)
+		console.log("state", state)
+		console.log("local", local)
+		var overlayMaps = {
+		    "International": international,
+		    "State": state,
+		    "US Cities and Counties": local
+		};
+		L.control.layers(baseMaps, overlayMaps).addTo(mymap);
+	 }, 500);	
 </script>
 </html>
