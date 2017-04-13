@@ -30,16 +30,18 @@
 </body>
 <script type="text/javascript">
 	var mymap = L.map('mapid').setView([40, 0], 1.5);
-	var international, state, local, internationalSearch, stateSearch, localSearch;
-	var searchLayer = L.layerGroup().addTo(mymap);
-
+	var international, state, local;
 	var myStyle = {
 	    "color": "black",
 	    "weight": 1,
 	    "opacity": 0.8,
 	    'fillColor': '#4679B2',
 	    'fillOpacity': 0.7
-	};
+	},
+		blankStyle = {
+			opacity: 0,
+			fillOpacity: 0
+		};
 	var geoDatas = [{international: internationalGeoJson}, {state: statesGeoJson}, {local: localGeoJson}]
 
 	var layer = new L.StamenTileLayer("toner-lite");
@@ -52,8 +54,7 @@
 	international = L.geoJSON(internationalGeoJson, {
 	    style: myStyle,
 	    onEachFeature: function(feature, layer) {
-	    	feature.layer = layer;
-	    	layer.bindPopup('<h4>'+ feature.properties.Item +'</h4>');
+	    	layer.bindPopup('<h4>'+ feature.properties.Item +'</h4>' + "<h4>" + "<a target='blank' href='"+feature.properties.Link+"'>"+feature.properties.Link+"</a><h4>" );
 		    layer.on({
 		    	contextmenu: function(e){
 		    		var popup = L.popup().setLatLng(e.latlng).setContent(feature.properties.Item  + "<br> Link: " + feature.properties.Link)
@@ -81,6 +82,7 @@
 	state = L.geoJSON(statesGeoJson, {
 	    style: myStyle,
 	    onEachFeature: function(feature, layer) {
+	    	layer.bindPopup('<h4>'+ feature.properties.Item +'</h4>' + "<h4>" + "<a target='blank' href='"+feature.properties.Link+"'>"+feature.properties.Link+"</a><h4>" );
 		    layer.on({
 		    	contextmenu: function(e){
 		    		var popup = L.popup().setLatLng(e.latlng).setContent(feature.properties.Item  + "<br> Link: " + feature.properties.Link)
@@ -108,11 +110,8 @@
 	local = L.geoJSON(localGeoJson, {
 	    style: myStyle,
 	    onEachFeature: function(feature, layer) {
+	    	layer.bindPopup('<h4>'+ feature.properties.Item +'</h4>' + "<h4>" + "<a target='blank' href='"+feature.properties.Link+"'>"+feature.properties.Link+"</a><h4>" );
 		    layer.on({
-		    	contextmenu: function(e){
-		    		var popup = L.popup().setLatLng(e.latlng).setContent(feature.properties.Item  + "<br> Link: " + feature.properties.Link)
-				    popup.openOn(mymap);
-				},
                 mouseover: function(e) {
                 	layer.setStyle({
 			            fillColor: 'orange',
@@ -124,13 +123,33 @@
 			            fillColor: '#4679B2',
 			            fillOpacity: 0.7
 			        })
-		        },
-                click: function (e) {
-		            window.open(feature.properties.Link,'_blank');
 		        }
             });
 		}
 	})
+
+	var allGeoJson = L.geoJson([internationalGeoJson, localGeoJson, statesGeoJson], {
+		style: blankStyle,
+		onEachFeature: function(feature, layer) {
+			layer.bindPopup('<h4>'+ feature.properties.Item +'</h4>' + "<h4>" + "<a target='blank' href='"+feature.properties.Link+"'>"+feature.properties.Link+"</a><h4>" );
+			layer.on({
+				contextmenu: function(e){
+		    		var popup = L.popup().setLatLng(e.latlng).setContent(feature.properties.Item  + "<br> Link: " + feature.properties.Link)
+				    popup.openOn(mymap);
+				},
+				mouseout: function (e) {
+                	layer.setStyle({
+			            fillColor: '#4679B2',
+			            fillOpacity: 0
+			        })
+		        },
+		        click: function (e) {
+		            window.open(feature.properties.Link,'_blank');
+		        }
+            });
+		}
+	});
+
 	var baseMaps = {
 	    "Text Map": layer,
 	    'Geographic Map': layer2
@@ -147,25 +166,25 @@
 
 	var searchControl = new L.Control.Search({
 		moveToLocation: function(latlng, title, map) {
-			var zoom = map.getBoundsZoom(latlng.layer.getBounds());
+			if(latlng.layer.getBounds){
+				var zoom = map.getBoundsZoom(latlng.layer.getBounds());
+			} else {
+				var zoom = 6;
+			}
   			map.setView(latlng, zoom); // access the zoom
 		},
 		position: 'topright',
-		layer: international,
+		layer: allGeoJson,
 		propertyName: 'Item',
 		marker: false
-	});
-
-	searchControl.on('search:locationfound', function(e) {
-		e.layer.setStyle({fillColor: 'orange'});
+	}).on('search:locationfound', function(e) {
+		e.layer.setStyle({fillColor: 'orange', fillOpacity: .6});
 		if(e.layer._popup){
 			e.layer._popup._content=e.layer.feature.properties.Item+"<br> <a target='blank' href='"+e.layer.feature.properties.Link+"'>"+e.layer.feature.properties.Link+"</a>";
 			e.layer.openPopup();
 		}
 	})
-
 	mymap.addControl( searchControl );
-
 
 </script>
 </html>
