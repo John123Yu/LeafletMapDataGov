@@ -54,10 +54,10 @@
 	international = L.geoJSON(internationalGeoJson, {
 	    style: myStyle,
 	    onEachFeature: function(feature, layer) {
-	    	layer.bindPopup('<h4>'+ feature.properties.Item +'</h4>' + "<h4>" + "<a target='blank' href='"+feature.properties.Link+"'>"+feature.properties.Link+"</a><h4>" );
+	    	layer.bindPopup('<h3>'+ feature.properties.Item +'</h3>' + "<h4>" + "<a target='blank' href='"+feature.properties.Link+"'>"+feature.properties.Link+"</a><h4>" );
 		    layer.on({
                 contextmenu: function(e){
-		    		var popup = L.popup().setLatLng(e.latlng).setContent(feature.properties.Item  + "<br> Link: " + feature.properties.Link)
+		    		var popup = L.popup().setLatLng(e.latlng).setContent('<h3>'+ feature.properties.Item +'</h3>' + "<h4>" + "<a target='blank' href='"+feature.properties.Link+"'>"+feature.properties.Link+"</a><h4>")
 				    popup.openOn(mymap);
 				},
 				mouseover: function(e) {
@@ -82,10 +82,10 @@
 	state = L.geoJSON(statesGeoJson, {
 	    style: myStyle,
 	    onEachFeature: function(feature, layer) {
-	    	layer.bindPopup('<h4>'+ feature.properties.Item +'</h4>' + "<h4>" + "<a target='blank' href='"+feature.properties.Link+"'>"+feature.properties.Link+"</a><h4>" );
+	    	layer.bindPopup('<h3>'+ feature.properties.Item +'</h3>' + "<h4>" + "<a target='blank' href='"+feature.properties.Link+"'>"+feature.properties.Link+"</a><h4>" );
 		    layer.on({
                 contextmenu: function(e){
-		    		var popup = L.popup().setLatLng(e.latlng).setContent(feature.properties.Item  + "<br> Link: " + feature.properties.Link)
+		    		var popup = L.popup().setLatLng(e.latlng).setContent('<h3>'+ feature.properties.Item +'</h3>' + "<h4>" + "<a target='blank' href='"+feature.properties.Link+"'>"+feature.properties.Link+"</a><h4>")
 				    popup.openOn(mymap);
 				},
 				mouseover: function(e) {
@@ -110,10 +110,10 @@
 	local = L.geoJSON(localGeoJson, {
 	    style: myStyle,
 	    onEachFeature: function(feature, layer) {
-	    	layer.bindPopup('<h4>'+ feature.properties.Item +'</h4>' + "<h4>" + "<a target='blank' href='"+feature.properties.Link+"'>"+feature.properties.Link+"</a><h4>" );
+	    	layer.bindPopup('<h3>'+ feature.properties.Item +'</h3>' + "<h4>" + "<a target='blank' href='"+feature.properties.Link+"'>"+feature.properties.Link+"</a></h4>" );
 		    layer.on({
                 contextmenu: function(e){
-		    		var popup = L.popup().setLatLng(e.latlng).setContent(feature.properties.Item  + "<br> Link: " + feature.properties.Link)
+		    		var popup = L.popup().setLatLng(e.latlng).setContent('<h3>'+ feature.properties.Item +'</h3>' + "<h4>" + "<a target='blank' href='"+feature.properties.Link+"'>"+feature.properties.Link+"</a><h4>")
 				    popup.openOn(mymap);
 				},
 				mouseover: function(e) {
@@ -138,10 +138,10 @@
 	var allGeoJson = L.geoJson([internationalGeoJson, localGeoJson, statesGeoJson], {
 		style: blankStyle,
 		onEachFeature: function(feature, layer) {
-			layer.bindPopup('<h4>'+ feature.properties.Item +'</h4>' + "<h4>" + "<a target='blank' href='"+feature.properties.Link+"'>"+feature.properties.Link+"</a><h4>" );
+			layer.bindPopup('<h3>'+ feature.properties.Item +'</h3>' + "<h4>" + "<a target='blank' href='"+feature.properties.Link+"'>"+feature.properties.Link+"</a><h4>" );
 			layer.on({
 				contextmenu: function(e){
-		    		var popup = L.popup().setLatLng(e.latlng).setContent(feature.properties.Item  + "<br> Link: " + feature.properties.Link)
+		    		var popup = L.popup().setLatLng(e.latlng).setContent('<h3>'+ feature.properties.Item +'</h3>' + "<h4>" + "<a target='blank' href='"+feature.properties.Link+"'>"+feature.properties.Link+"</a><h4>")
 				    popup.openOn(mymap);
 				},
 				mouseover: function(e) {
@@ -177,6 +177,7 @@
 	mymap.addLayer(local);
 	L.control.layers(baseMaps, overlayMaps).addTo(mymap);
 
+
 	var searchControl = new L.Control.Search({
 		moveToLocation: function(latlng, title, map) {
 			if(latlng.layer.getBounds){
@@ -191,9 +192,10 @@
 		propertyName: 'Item',
 		marker: false
 	}).on('search:locationfound', function(e) {
-		e.layer.setStyle({fillColor: 'orange', fillOpacity: .6});
+		if(e.layer.setStyle){
+			e.layer.setStyle({fillColor: 'orange', fillOpacity: .6});
+		}
 		if(e.layer._popup){
-			e.layer._popup._content=e.layer.feature.properties.Item+"<br> <a target='blank' href='"+e.layer.feature.properties.Link+"'>"+e.layer.feature.properties.Link+"</a>";
 			e.layer.openPopup();
 		}
 	})
