@@ -20,6 +20,9 @@
 			font-weight: bold;
 			line-height: 1.5em;
 		}
+		/*.leaflet-marker-icon {
+			display: none;
+		}*/
 	</style>
 </head>
 <body>
@@ -38,7 +41,7 @@
 		blankStyle = {
 			opacity: 0,
 			fillOpacity: 0
-		};
+	};
 	var geoDatas = [{international: internationalGeoJson}, {state: statesGeoJson}, {local: localGeoJson}]
 
 	var layer = new L.StamenTileLayer("toner-lite");
@@ -58,16 +61,20 @@
 				    popup.openOn(mymap);
 				},
 				mouseover: function(e) {
-                	layer.setStyle({
-			            fillColor: 'orange',
-			            fillOpacity: 0.7
-			        })
+                	if(layer.setStyle){
+	                	layer.setStyle({
+				            fillColor: 'orange',
+				            fillOpacity: 0.7
+				        })
+                	}
                 },
 				mouseout: function (e) {
-                	layer.setStyle({
-			            fillColor: '#4679B2',
-			            fillOpacity: .8
-			        })
+                	if(layer.setStyle){
+	                	layer.setStyle({
+				            fillColor: '#4679B2',
+				            fillOpacity: .8
+				        })
+                	}
 		        },
 		        click: function (e) {
 		            window.open(feature.properties.Link,'_blank');
@@ -86,16 +93,20 @@
 				    popup.openOn(mymap);
 				},
 				mouseover: function(e) {
-                	layer.setStyle({
-			            fillColor: 'orange',
-			            fillOpacity: 0.7
-			        })
+                	if(layer.setStyle){
+	                	layer.setStyle({
+				            fillColor: 'orange',
+				            fillOpacity: 0.7
+				        })
+                	}
                 },
 				mouseout: function (e) {
-                	layer.setStyle({
-			            fillColor: '#4679B2',
-			            fillOpacity: 0.8
-			        })
+                	if(layer.setStyle){
+	                	layer.setStyle({
+				            fillColor: '#4679B2',
+				            fillOpacity: 0.8
+				        })
+                	}
 		        },
 		        click: function (e) {
 		            window.open(feature.properties.Link,'_blank');
@@ -114,16 +125,20 @@
 				    popup.openOn(mymap);
 				},
 				mouseover: function(e) {
-                	layer.setStyle({
-			            fillColor: 'orange',
-			            fillOpacity: 0.7
-			        })
+                	if(layer.setStyle){
+	                	layer.setStyle({
+				            fillColor: 'orange',
+				            fillOpacity: 0.7
+				        })
+                	}
                 },
 				mouseout: function (e) {
-                	layer.setStyle({
-			            fillColor: '#4679B2',
-			            fillOpacity: 0.8
-			        })
+                	if(layer.setStyle){
+	                	layer.setStyle({
+				            fillColor: '#4679B2',
+				            fillOpacity: 0.8
+				        })
+                	}
 		        },
 		        click: function (e) {
 		            window.open(feature.properties.Link,'_blank');
@@ -135,23 +150,39 @@
 	var allGeoJson = L.geoJson([internationalGeoJson, localGeoJson, statesGeoJson], {
 		style: blankStyle,
 		onEachFeature: function(feature, layer) {
+			if(layer.setOpacity) {
+				layer.setOpacity(0)
+			}
 			layer.bindPopup('<h3>'+ feature.properties.Item +'</h3>' + "<h4>" + "<a target='blank' href='"+feature.properties.Link+"'>"+feature.properties.Link+"</a><h4>" );
 			layer.on({
 				contextmenu: function(e){
 		    		var popup = L.popup().setLatLng(e.latlng).setContent('<h3>'+ feature.properties.Item +'</h3>' + "<h4>" + "<a target='blank' href='"+feature.properties.Link+"'>"+feature.properties.Link+"</a><h4>")
 				    popup.openOn(mymap);
 				},
+				mousemove: function(e){
+					var id = setTimeout(function(){ 
+						var popup = L.popup().setLatLng(e.latlng).setContent('<h3>'+ feature.properties.Item +'</h3>' + "<h4>" + "<a target='blank' href='"+feature.properties.Link+"'>"+feature.properties.Link+"</a><h4>")
+					    popup.openOn(mymap);	
+					}, 400);
+					while (id--) {
+					    window.clearTimeout(id);
+					}
+				},
 				mouseover: function(e) {
-                	layer.setStyle({
-			            fillColor: 'orange',
-			            fillOpacity: 0.7
-			        })
+                	if(layer.setStyle){
+	                	layer.setStyle({
+				            fillColor: 'orange',
+				            fillOpacity: 0.7
+				        })
+                	}
                 },
 				mouseout: function (e) {
-                	layer.setStyle({
-			            fillColor: '#4679B2',
-			            fillOpacity: 0
-			        })
+					if(layer.setStyle){
+	                	layer.setStyle({
+				            fillColor: '#4679B2',
+				            fillOpacity: 0
+				        })
+					}
 		        },
 		        click: function (e) {
 		            window.open(feature.properties.Link,'_blank');
@@ -159,7 +190,7 @@
             });
 		}
 	});
-
+	console.log(allGeoJson)
 	var baseMaps = {
 	    "Text Map": layer,
 	    'Geographic Map': layer2
@@ -197,6 +228,7 @@
 		}
 	})
 	mymap.addControl( searchControl );
+
 
 </script>
 </html>
