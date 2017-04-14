@@ -4,6 +4,7 @@
 	<title>Data.gov Map of Open Government Websites</title>
 	<link rel="stylesheet" href="./Leaflet/leaflet.css" />
 	<link rel="stylesheet" href="./leaflet-search/src/leaflet-search.css" />
+	<script src="https://code.jquery.com/jquery-3.2.1.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
 	<script src="./Leaflet/leaflet.js"></script>
 	<script type="text/javascript" src="http://maps.stamen.com/js/tile.stamen.js?v1.3.0"></script>
 	<script src="./leaflet-search/src/leaflet-search.js"></script>
@@ -50,6 +51,7 @@
 	    maxZoom: 15
 	});
 	mymap.addLayer(layer2);
+
 
 	international = L.geoJSON(internationalGeoJson, {
 	    style: myStyle,
@@ -163,7 +165,7 @@
 					var id = setTimeout(function(){ 
 						var popup = L.popup().setLatLng(e.latlng).setContent('<h3>'+ feature.properties.Item +'</h3>' + "<h4>" + "<a target='blank' href='"+feature.properties.Link+"'>"+feature.properties.Link+"</a><h4>")
 					    popup.openOn(mymap);	
-					}, 400);
+					}, 650);
 					while (id--) {
 					    window.clearTimeout(id);
 					}
@@ -228,6 +230,16 @@
 		}
 	})
 	mymap.addControl( searchControl );
+	local.bringToFront();
+	mymap.on("overlayadd", function (event) {
+	  allGeoJson.bringToFront();
+	  local.bringToFront();
+	});
+
+	$(window).on("resize", function() {
+	    $("#mapid").height($(window).height()*.8).width($(window).width()*.8);
+	    mymap.invalidateSize();
+	}).trigger("resize");
 
 
 </script>

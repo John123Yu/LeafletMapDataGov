@@ -9,3 +9,8 @@ https://github.com/topojson/topojson
 https://github.com/johan/world.geo.json/tree/master/countries/USA
 http://www.latlong.net/
 https://rawgit.com/
+leaflet
+leaflet search
+stamen
+openstreetmaps
+mapbox
