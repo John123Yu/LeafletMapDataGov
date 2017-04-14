@@ -2,12 +2,16 @@
 <html>
 <head>
 	<title>Data.gov Map of Open Government Websites</title>
+	<link rel="stylesheet" href="./bootstrap-3.3.7-dist/css/bootstrap.min.css">
 	<link rel="stylesheet" href="./Leaflet/leaflet.css" />
 	<link rel="stylesheet" href="./leaflet-search/src/leaflet-search.css" />
+	<link rel="stylesheet" href="./Leaflet.awesome-markers/dist/leaflet.awesome-markers.css">
 	<script src="https://code.jquery.com/jquery-3.2.1.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
+	<!-- <script type="text/javascript" src= "jquery/src/jquery.js"></script> -->
 	<script src="./Leaflet/leaflet.js"></script>
 	<script type="text/javascript" src="http://maps.stamen.com/js/tile.stamen.js?v1.3.0"></script>
 	<script src="./leaflet-search/src/leaflet-search.js"></script>
+	<script src="./Leaflet.awesome-markers/dist/leaflet.awesome-markers.js"></script>
 	<script src="./data/international.js"></script>
 	<script src="./data/us_states.js"></script>
 	<script src="./data/us_cities_counties.js"></script>
@@ -21,18 +25,18 @@
 			font-weight: bold;
 			line-height: 1.5em;
 		}
-		/*.leaflet-marker-icon {
-			display: none;
-		}*/
+		.awesome-marker i {
+	        font-size: 15px;
+	    }
 	</style>
 </head>
 <body>
 	<div id="mapid"></div>
 </body>
 <script type="text/javascript">
-	var mymap = L.map('mapid').setView([40, 0], 1.5);
-	var international, state, local;
-	var myStyle = {
+	// Creates the map, sets default feature styling, custom marker, and gets map layers from Stamen and OpenStreetMaps
+	var mymap = L.map('mapid').setView([40, 0], 1.5),
+		myStyle = {
 	    "color": "black",
 	    "weight": 1,
 	    "opacity": 0.8,
@@ -42,113 +46,68 @@
 		blankStyle = {
 			opacity: 0,
 			fillOpacity: 0
-	};
-	var geoDatas = [{international: internationalGeoJson}, {state: statesGeoJson}, {local: localGeoJson}]
-
-	var layer = new L.StamenTileLayer("toner-lite");
-	var layer2 = L.tileLayer('http://{s}.tile.openstreetmap.fr/osmfr/{z}/{x}/{y}.png', {
+	},
+	newMarker = L.AwesomeMarkers.icon({
+	    icon: 'glyphicon-info-sign',
+	    iconColor: 'white',	
+		markerColor: 'darkblue'
+	}),
+	geoDatas = [{value: internationalGeoJson, geoLayer: ""}, {value: statesGeoJson, geoLayer: ""}, {value: localGeoJson, geoLayer: ""}],
+	layer = new L.StamenTileLayer("toner-lite"),
+	layer2 = L.tileLayer('http://{s}.tile.openstreetmap.fr/osmfr/{z}/{x}/{y}.png', {
 	    attribution: '<a href="http://www.openstreetmap.org/copyright">&#169; OpenStreetMap contributors</a>',
 	    maxZoom: 15
 	});
+	// This is the dfault layer---------------------------------------------------
 	mymap.addLayer(layer2);
-
-
-	international = L.geoJSON(internationalGeoJson, {
-	    style: myStyle,
-	    onEachFeature: function(feature, layer) {
-	    	layer.bindPopup('<h3>'+ feature.properties.Item +'</h3>' + "<h4>" + "<a target='blank' href='"+feature.properties.Link+"'>"+feature.properties.Link+"</a><h4>" );
-		    layer.on({
-                contextmenu: function(e){
-		    		var popup = L.popup().setLatLng(e.latlng).setContent('<h3>'+ feature.properties.Item +'</h3>' + "<h4>" + "<a target='blank' href='"+feature.properties.Link+"'>"+feature.properties.Link+"</a><h4>")
-				    popup.openOn(mymap);
-				},
-				mouseover: function(e) {
-                	if(layer.setStyle){
-	                	layer.setStyle({
-				            fillColor: 'orange',
-				            fillOpacity: 0.7
-				        })
-                	}
-                },
-				mouseout: function (e) {
-                	if(layer.setStyle){
-	                	layer.setStyle({
-				            fillColor: '#4679B2',
-				            fillOpacity: .8
-				        })
-                	}
-		        },
-		        click: function (e) {
-		            window.open(feature.properties.Link,'_blank');
-		        }
-            });
-		}
-	})
-
-	state = L.geoJSON(statesGeoJson, {
-	    style: myStyle,
-	    onEachFeature: function(feature, layer) {
-	    	layer.bindPopup('<h3>'+ feature.properties.Item +'</h3>' + "<h4>" + "<a target='blank' href='"+feature.properties.Link+"'>"+feature.properties.Link+"</a><h4>" );
-		    layer.on({
-                contextmenu: function(e){
-		    		var popup = L.popup().setLatLng(e.latlng).setContent('<h3>'+ feature.properties.Item +'</h3>' + "<h4>" + "<a target='blank' href='"+feature.properties.Link+"'>"+feature.properties.Link+"</a><h4>")
-				    popup.openOn(mymap);
-				},
-				mouseover: function(e) {
-                	if(layer.setStyle){
-	                	layer.setStyle({
-				            fillColor: 'orange',
-				            fillOpacity: 0.7
-				        })
-                	}
-                },
-				mouseout: function (e) {
-                	if(layer.setStyle){
-	                	layer.setStyle({
-				            fillColor: '#4679B2',
-				            fillOpacity: 0.8
-				        })
-                	}
-		        },
-		        click: function (e) {
-		            window.open(feature.properties.Link,'_blank');
-		        }
-            });
-		}
-	})
-
-	local = L.geoJSON(localGeoJson, {
-	    style: myStyle,
-	    onEachFeature: function(feature, layer) {
-	    	layer.bindPopup('<h3>'+ feature.properties.Item +'</h3>' + "<h4>" + "<a target='blank' href='"+feature.properties.Link+"'>"+feature.properties.Link+"</a></h4>" );
-		    layer.on({
-                contextmenu: function(e){
-		    		var popup = L.popup().setLatLng(e.latlng).setContent('<h3>'+ feature.properties.Item +'</h3>' + "<h4>" + "<a target='blank' href='"+feature.properties.Link+"'>"+feature.properties.Link+"</a><h4>")
-				    popup.openOn(mymap);
-				},
-				mouseover: function(e) {
-                	if(layer.setStyle){
-	                	layer.setStyle({
-				            fillColor: 'orange',
-				            fillOpacity: 0.7
-				        })
-                	}
-                },
-				mouseout: function (e) {
-                	if(layer.setStyle){
-	                	layer.setStyle({
-				            fillColor: '#4679B2',
-				            fillOpacity: 0.8
-				        })
-                	}
-		        },
-		        click: function (e) {
-		            window.open(feature.properties.Link,'_blank');
-		        }
-            });
-		}
-	})
-
+	// ---------------------------------------------------------------------------
+	// This maps the geoJson Data onto the Map------------------------------------
+	for(var item in geoDatas){
+		geoDatas[item].geoLayer = L.geoJSON(geoDatas[item].value, {
+		    style: myStyle,
+		    pointToLayer: function (feature, latlng) {
+		        return L.marker(latlng, {icon: newMarker});
+		    },
+		    onEachFeature: function(feature, layer) {
+		    	layer.bindPopup('<h3>'+ feature.properties.Item +'</h3>' + "<h4>" + "<a target='blank' href='"+feature.properties.Link+"'>"+feature.properties.Link+"</a><h4>" );
+			    layer.on({
+	                contextmenu: function(e){
+			    		var popup = L.popup().setLatLng(e.latlng).setContent('<h3>'+ feature.properties.Item +'</h3>' + "<h4>" + "<a target='blank' href='"+feature.properties.Link+"'>"+feature.properties.Link+"</a><h4>")
+					    popup.openOn(mymap);
+					},
+					mousemove: function(e){
+						var id = setTimeout(function(){ 
+							var popup = L.popup().setLatLng(e.latlng).setContent('<h3>'+ feature.properties.Item +'</h3>' + "<h4>" + "<a target='blank' href='"+feature.properties.Link+"'>"+feature.properties.Link+"</a><h4>")
+						    popup.openOn(mymap);	
+						}, 850);
+						while (id--) {
+						    window.clearTimeout(id);
+						}
+					},
+					mouseover: function(e) {
+	                	if(layer.setStyle){
+		                	layer.setStyle({
+					            fillColor: 'orange',
+					            fillOpacity: 0.7
+					        })
+	                	}
+	                },
+					mouseout: function (e) {
+	                	if(layer.setStyle){
+		                	layer.setStyle({
+					            fillColor: '#4679B2',
+					            fillOpacity: .8
+					        })
+	                	}
+			        },
+			        click: function (e) {
+			            window.open(feature.properties.Link,'_blank');
+			        }
+	            });
+			}
+		})	
+	}
+	//---allGeoJson is all three geoJson datas combined, made specifically for the search feature. Otherwise it is redundant, but a needed workaround for search feature
 	var allGeoJson = L.geoJson([internationalGeoJson, localGeoJson, statesGeoJson], {
 		style: blankStyle,
 		onEachFeature: function(feature, layer) {
@@ -165,7 +124,7 @@
 					var id = setTimeout(function(){ 
 						var popup = L.popup().setLatLng(e.latlng).setContent('<h3>'+ feature.properties.Item +'</h3>' + "<h4>" + "<a target='blank' href='"+feature.properties.Link+"'>"+feature.properties.Link+"</a><h4>")
 					    popup.openOn(mymap);	
-					}, 650);
+					}, 850);
 					while (id--) {
 					    window.clearTimeout(id);
 					}
@@ -185,6 +144,9 @@
 				            fillOpacity: 0
 				        })
 					}
+					var id = setTimeout(function(){ 
+						mymap.closePopup();
+					}, 855);
 		        },
 		        click: function (e) {
 		            window.open(feature.properties.Link,'_blank');
@@ -192,22 +154,23 @@
             });
 		}
 	});
-	console.log(allGeoJson)
+	//--------------------------------------------------------------------------
+	//This here sets up the layering feature------------------------------------
 	var baseMaps = {
 	    "Text Map": layer,
 	    'Geographic Map': layer2
+	},
+	overlayMaps = {
+	    "International": geoDatas[0].geoLayer,
+	    "State": geoDatas[1].geoLayer,
+	    "US Cities and Counties": geoDatas[2].geoLayer
 	};
-	var overlayMaps = {
-	    "International": international,
-	    "State": state,
-	    "US Cities and Counties": local
-	};
-	mymap.addLayer(international);
-	mymap.addLayer(state);
-	mymap.addLayer(local);
+	mymap.addLayer(geoDatas[0].geoLayer);
+	mymap.addLayer(geoDatas[1].geoLayer);
+	mymap.addLayer(geoDatas[2].geoLayer);
 	L.control.layers(baseMaps, overlayMaps).addTo(mymap);
-
-
+	//--------------------------------------------------------------------------
+	//This here sets up the search feature -------------------------------------
 	var searchControl = new L.Control.Search({
 		moveToLocation: function(latlng, title, map) {
 			if(latlng.layer.getBounds){
@@ -230,17 +193,19 @@
 		}
 	})
 	mymap.addControl( searchControl );
-	local.bringToFront();
+	//--------------------------------------------------------------------------
+	//This here makes sure the allGeojson layer is always on top of state and international layer
+	geoDatas[2].geoLayer.bringToFront();
 	mymap.on("overlayadd", function (event) {
 	  allGeoJson.bringToFront();
-	  local.bringToFront();
+	  geoDatas[2].geoLayer.bringToFront();
 	});
-
+	//--------------------------------------------------------------------------
+	//This here makes the map responsive----------------------------------------
 	$(window).on("resize", function() {
 	    $("#mapid").height($(window).height()*.8).width($(window).width()*.8);
 	    mymap.invalidateSize();
 	}).trigger("resize");
-
-
+	//--------------------------------------------------------------------------
 </script>
 </html>
