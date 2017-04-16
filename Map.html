@@ -22,11 +22,24 @@
 			border: 1px solid #333333;
 		}
 		.leaflet-popup-content {
+			height: 20px;
+			padding: 0px;
+			/*margin: 0px;*/
+			line-height: .5px;
 			font-weight: bold;
-			line-height: 1.5em;
+		}
+		.leaflet-popup-content h3, h4{
+			font-size: .9em;
+			margin: 1px;
 		}
 		.awesome-marker i {
 	        font-size: 15px;
+	    }
+	    .search-input {
+	    	color: black;
+	    	width: 200px;
+	    	height: 30px;
+	    	font-size: 1.3em;
 	    }
 	</style>
 </head>
@@ -79,7 +92,7 @@
 						var id = setTimeout(function(){ 
 							var popup = L.popup().setLatLng(e.latlng).setContent('<h3>'+ feature.properties.Item +'</h3>' + "<h4>" + "<a target='blank' href='"+feature.properties.Link+"'>"+feature.properties.Link+"</a><h4>")
 						    popup.openOn(mymap);	
-						}, 850);
+						}, 300);
 						while (id--) {
 						    window.clearTimeout(id);
 						}
@@ -124,7 +137,7 @@
 					var id = setTimeout(function(){ 
 						var popup = L.popup().setLatLng(e.latlng).setContent('<h3>'+ feature.properties.Item +'</h3>' + "<h4>" + "<a target='blank' href='"+feature.properties.Link+"'>"+feature.properties.Link+"</a><h4>")
 					    popup.openOn(mymap);	
-					}, 850);
+					}, 400);
 					while (id--) {
 					    window.clearTimeout(id);
 					}
@@ -146,7 +159,7 @@
 					}
 					var id = setTimeout(function(){ 
 						mymap.closePopup();
-					}, 855);
+					}, 410);
 		        },
 		        click: function (e) {
 		            window.open(feature.properties.Link,'_blank');
