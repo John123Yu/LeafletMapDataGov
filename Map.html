@@ -2,23 +2,24 @@
 <html>
 <head>
 	<title>Data.gov Map of Open Government Websites</title>
-	<link rel="stylesheet" href="./bootstrap-3.3.7-dist/css/bootstrap.min.css">
+	<!-- <link rel="stylesheet" href="./bootstrap-3.3.7-dist/css/bootstrap.min.css"> -->
 	<link rel="stylesheet" href="./Leaflet/leaflet.css" />
 	<link rel="stylesheet" href="./leaflet-search/src/leaflet-search.css" />
-	<link rel="stylesheet" href="./Leaflet.awesome-markers/dist/leaflet.awesome-markers.css">
 	<link rel="stylesheet" type="text/css" href="./Leaflet.ZoomBox/L.Control.ZoomBox.css">
 	<link rel="stylesheet" type="text/css" href="./Leaflet.defaultextent/dist/leaflet.defaultextent.css">
 	<link rel="stylesheet" type="text/css" href="./Leaflet.Pancontrol/src/L.Control.Pan.css">
+	<link rel="stylesheet" type="text/css" href="./Leaflet.vector-markers/dist/leaflet-vector-markers.css">
 
 	<!-- <script type="text/javascript" src= "jquery/src/jquery.js"></script> -->
 	<script src="https://code.jquery.com/jquery-3.2.1.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
 	<script src="./Leaflet/leaflet.js"></script>
 	<script src="http://maps.stamen.com/js/tile.stamen.js?v1.3.0"></script>
 	<script src="./leaflet-search/src/leaflet-search.js"></script>
-	<script src="./Leaflet.awesome-markers/dist/leaflet.awesome-markers.js"></script>
 	<script src="./Leaflet.ZoomBox/L.Control.ZoomBox.min.js"></script>
-	<script src ="./Leaflet.defaultextent/dist/leaflet.defaultextent.js"></script>
-	<script src ="./Leaflet.Pancontrol/src/L.Control.Pan.js"></script>
+	<script src="./Leaflet.defaultextent/dist/leaflet.defaultextent.js"></script>
+	<script src="./Leaflet.Pancontrol/src/L.Control.Pan.js"></script>
+	<script src="./Leaflet.vector-markers/dist/leaflet-vector-markers.min.js"></script>
+
 	<script src="./data/international.js"></script>
 	<script src="./data/us_states.js"></script>
 	<script src="./data/us_cities_counties.js"></script>
@@ -66,10 +67,12 @@
 			opacity: 0,
 			fillOpacity: 0
 	},
-	newMarker = L.AwesomeMarkers.icon({
-	    icon: 'glyphicon-flag',
-	    iconColor: 'white',	
-		markerColor: 'darkblue'
+	newMarker = L.VectorMarkers.icon({
+	    icon:'star',
+		markerColor: 'rgb(252, 239, 126)',
+		iconSize: [15, 25],
+		iconAnchor: [7, 25], 
+		shadowSize: [0, 0]
 	}),
 	geoDatas = [{value: internationalGeoJson, geoLayer: ""}, {value: statesGeoJson, geoLayer: ""}, {value: localGeoJson, geoLayer: ""}],
 	layer = new L.StamenTileLayer("toner-lite"),
