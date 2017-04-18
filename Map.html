@@ -6,12 +6,19 @@
 	<link rel="stylesheet" href="./Leaflet/leaflet.css" />
 	<link rel="stylesheet" href="./leaflet-search/src/leaflet-search.css" />
 	<link rel="stylesheet" href="./Leaflet.awesome-markers/dist/leaflet.awesome-markers.css">
-	<script src="https://code.jquery.com/jquery-3.2.1.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
+	<link rel="stylesheet" type="text/css" href="./Leaflet.ZoomBox/L.Control.ZoomBox.css">
+	<link rel="stylesheet" type="text/css" href="./Leaflet.defaultextent/dist/leaflet.defaultextent.css">
+	<link rel="stylesheet" type="text/css" href="./Leaflet.Pancontrol/src/L.Control.Pan.css">
+
 	<!-- <script type="text/javascript" src= "jquery/src/jquery.js"></script> -->
+	<script src="https://code.jquery.com/jquery-3.2.1.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
 	<script src="./Leaflet/leaflet.js"></script>
-	<script type="text/javascript" src="http://maps.stamen.com/js/tile.stamen.js?v1.3.0"></script>
+	<script src="http://maps.stamen.com/js/tile.stamen.js?v1.3.0"></script>
 	<script src="./leaflet-search/src/leaflet-search.js"></script>
 	<script src="./Leaflet.awesome-markers/dist/leaflet.awesome-markers.js"></script>
+	<script src="./Leaflet.ZoomBox/L.Control.ZoomBox.min.js"></script>
+	<script src ="./Leaflet.defaultextent/dist/leaflet.defaultextent.js"></script>
+	<script src ="./Leaflet.Pancontrol/src/L.Control.Pan.js"></script>
 	<script src="./data/international.js"></script>
 	<script src="./data/us_states.js"></script>
 	<script src="./data/us_cities_counties.js"></script>
@@ -33,7 +40,6 @@
 			margin: 1px;
 		}
 		.awesome-marker i {
-	        font-size: 15px;
 	    }
 	    .search-input {
 	    	color: black;
@@ -61,7 +67,7 @@
 			fillOpacity: 0
 	},
 	newMarker = L.AwesomeMarkers.icon({
-	    icon: 'glyphicon-info-sign',
+	    icon: 'glyphicon-flag',
 	    iconColor: 'white',	
 		markerColor: 'darkblue'
 	}),
@@ -213,6 +219,21 @@
 	  allGeoJson.bringToFront();
 	  geoDatas[2].geoLayer.bringToFront();
 	});
+	//--------------------------------------------------------------------------
+	//This adds the arrow pan feature
+	L.control.pan({
+		position: 'bottomleft',
+		className: "panBox"
+	}).addTo(mymap);
+	//--------------------------------------------------------------------------
+	//This adds the return to original view feature
+	L.control.defaultExtent().addTo(mymap);
+	//--------------------------------------------------------------------------
+	//This adds the zoombox feature
+	var zoomBoxControl = L.control.zoomBox({
+	    modal: true
+	});
+	mymap.addControl(zoomBoxControl);
 	//--------------------------------------------------------------------------
 	//This here makes the map responsive----------------------------------------
 	$(window).on("resize", function() {
